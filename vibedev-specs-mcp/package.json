@@ -1,0 +1,50 @@
+{
+  "name": "vibedev-specs-mcp",
+  "version": "0.1.0",
+  "description": "MCP server for vibedev specs workflow - AI-powered development workflow from requirements to code",
+  "main": "dist/index.js",
+  "type": "module",
+  "bin": {
+    "vibedev-specs-mcp": "dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsx src/index.ts",
+    "start": "node dist/index.js",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "mcp",
+    "vibedev",
+    "specs",
+    "workflow",
+    "claude",
+    "ai",
+    "development",
+    "requirements",
+    "design",
+    "tasks"
+  ],
+  "author": "yinwm",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yinwm/vibedev-specs-mcp.git"
+  },
+  "homepage": "https://github.com/yinwm/vibedev-specs-mcp#readme",
+  "bugs": {
+    "url": "https://github.com/yinwm/vibedev-specs-mcp/issues"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0",
+    "nanoid": "^5.0.7"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "tsx": "^4.0.0",
+    "typescript": "^5.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
