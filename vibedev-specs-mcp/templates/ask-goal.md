@@ -1,5 +1,21 @@
-目标确认
-1. 首先和用户确定本次任务执行的目标，当你对目标没有歧义之后，才可以进行后续工作
-2. 和用户已对话形式进行目标确认
-3. 你自己根据代码库和可以使用的工具，来判断是否可以确认目标
-4. 你确认后，向用户重复目标，并等待用户确认，再等待用户下一步需求拆解的提示
+### 0. Goal Confirmation
+
+First, establish a clear understanding of the development goal through iterative dialogue with the user. This is the foundation for all subsequent work.
+
+Don't proceed to any other workflow stage until the goal is completely clear and confirmed by the user.
+
+**Constraints:**
+
+- The model MUST engage in thorough dialogue with the user to understand their development goals
+- The model MUST ask clarifying questions about:
+  - What problem the feature solves
+  - Who will use the feature
+  - What the expected outcome should be
+  - Any technical constraints or requirements
+- The model MUST NOT proceed to the next stage until the user explicitly confirms the goal
+- The model MUST summarize the understood goal and wait for user confirmation
+- The model MUST generate a suitable feature_name based on the confirmed goal (e.g., 'user-authentication', 'payment-integration')
+- The model SHOULD ask targeted questions to clarify ambiguous aspects
+- The model SHOULD suggest refinements if the goal seems too broad or unclear
+- The model MUST use the exact phrase "Goal confirmation complete" when ready to proceed
+- The model MUST NOT call any other tools until the user has explicitly approved the goal summary
