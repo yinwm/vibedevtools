@@ -78,6 +78,92 @@ Generated projects follow this structure:
 └── tasks.md
 ```
 
+## Example Usage
+
+Here's a complete example of using the VibeSpecs workflow:
+
+### 1. Start the Workflow
+```
+User: I want to build a user authentication feature
+Assistant: Let me start the VibeSpecs workflow for you.
+[calls vibedev_specs_workflow_start]
+```
+
+### 2. Goal Collection
+```
+Assistant: Welcome to VibeSpecs! Let's define your feature goals:
+
+1. What specific authentication methods do you want to support?
+2. Do you need social login (Google, GitHub, etc.)?
+3. What user roles and permissions are required?
+
+User: I need email/password login with JWT tokens, plus Google OAuth, and basic user/admin roles.
+
+Assistant: Perfect! Let me confirm:
+- Feature: User authentication system
+- Methods: Email/password + Google OAuth
+- Tokens: JWT-based
+- Roles: User and Admin
+- Feature name: "user-authentication"
+
+Is this correct?
+User: Yes, that's exactly what I need.
+
+[calls vibedev_specs_goal_confirmed with feature_name="user-authentication"]
+```
+
+### 3. Requirements Gathering
+```
+Assistant: Great! Now let's gather detailed requirements.
+[calls vibedev_specs_requirements_start]
+
+[Assistant generates detailed EARS-format requirements in .vibedev/specs/user-authentication/requirements.md]
+
+User: The requirements look comprehensive. Approved!
+
+[calls vibedev_specs_requirements_confirmed]
+```
+
+### 4. Design Documentation
+```
+Assistant: Now let's create the technical design.
+[calls vibedev_specs_design_start]
+
+[Assistant creates detailed design document with architecture, components, data models, etc.]
+
+User: Design looks good, proceed!
+
+[calls vibedev_specs_design_confirmed]
+```
+
+### 5. Task Planning
+```
+Assistant: Let's break this down into executable tasks.
+[calls vibedev_specs_tasks_start]
+
+[Assistant creates numbered task list with priorities and dependencies]
+
+User: Task breakdown is perfect!
+
+[calls vibedev_specs_tasks_confirmed]
+```
+
+### 6. Task Execution
+```
+Assistant: Time to implement! Let's start coding.
+[calls vibedev_specs_execute_start]
+
+[Assistant begins implementing tasks one by one, following the plan]
+```
+
+### Generated Project Structure
+```
+.vibedev/specs/user-authentication/
+├── requirements.md    # EARS-format requirements
+├── design.md         # Technical architecture
+└── tasks.md          # Implementation checklist
+```
+
 ## Development
 
 ```bash
