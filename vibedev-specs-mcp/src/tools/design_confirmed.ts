@@ -9,29 +9,29 @@ export async function designConfirmed(
   const { session_id, feature_name } = params;
   console.error(`[MCP] Design confirmed for feature: ${feature_name}`);
   
-  return `# ✅ 设计文档完成
+  return `# ✅ Design Document Completed
 
-## 已生成设计文档：
-📄 \`.vibedev/specs/${feature_name}/design.md\`
+## Generated Design Document:
+📄 ".vibedev/specs/${feature_name}/design.md"
 
-设计文档包含了完整的技术架构、组件设计和实现方案。
+The design document contains the complete technical architecture, component design, and implementation plan.
 
 ---
 
-## 下一阶段：任务规划 (4/5)
+## Next Stage: Task Planning (4/5)
 
-### 工作流进度：
-- [x] 1. 目标收集 ✅
-- [x] 2. 需求收集 ✅
-- [x] 3. **设计文档** ✅
-- [ ] 4. **任务规划** ← 下一阶段
-- [ ] 5. 任务执行
+### Workflow Progress:
+- [x] 1. Goal Collection ✅
+- [x] 2. Requirements Gathering ✅
+- [x] 3. **Design Document** ✅
+- [ ] 4. **Task Planning** ← Next Stage
+- [ ] 5. Task Execution
 
-现在请调用 \`vibedev_specs_tasks_start\` 开始任务规划阶段。
+Now please call \`vibedev_specs_tasks_start\` to begin the task planning stage.
 
-**会话信息**：
+**Session Information**:
 - Session ID: \`${session_id}\`
 - Feature Name: \`${feature_name}\`
-- Requirements: ✅ 已完成
-- Design: ✅ 已完成`;
+- Requirements: ✅ Completed
+- Design: ✅ Completed`;
 }

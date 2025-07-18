@@ -7,7 +7,7 @@ export async function workflowStart(): Promise<string> {
   const session_id = generateSessionId();
   console.error(`[MCP] Starting workflow with session_id: ${session_id}`);
   
-  // 使用 ask-goal.md 模板
+  // Use ask-goal.md template
   const template = await readTemplate('ask-goal.md', {
     session_id
   });

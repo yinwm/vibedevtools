@@ -11,7 +11,7 @@ export async function tasksStart(
   const { session_id, feature_name } = params;
   console.error(`[MCP] Starting tasks planning for feature: ${feature_name}`);
   
-  // 使用 gen-tasks.md 模板
+  // Use gen-tasks.md template
   const template = await readTemplate('gen-tasks.md', {
     feature_name,
     session_id

@@ -8,15 +8,15 @@ export async function readTemplate(
   templateName: string, 
   variables: Record<string, string> = {}
 ): Promise<string> {
-  // 从 src/utils 向上两级到项目根目录，然后进入 templates
+  // From src/utils go up two levels to the project root, then enter templates
   const templatePath = join(__dirname, '../../templates', templateName);
   console.error(`[MCP] Reading template: ${templatePath}`);
   
   let content = await readFile(templatePath, 'utf-8');
   
-  // 替换变量
+  // Replace variables
   Object.entries(variables).forEach(([key, value]) => {
-    const regex = new RegExp(`\\{${key}\\}`, 'g');
+    const regex = new RegExp(`\{${key}\}`, 'g');
     content = content.replace(regex, value);
   });
   

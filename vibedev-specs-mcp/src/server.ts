@@ -28,7 +28,7 @@ export function createServer() {
   const tools = [
     {
       name: 'vibedev_specs_workflow_start',
-      description: '启动 specs 工作流，开始目标收集阶段',
+      description: 'Start the specs workflow and begin the goal collection phase',
       inputSchema: {
         type: 'object',
         properties: {},
@@ -37,21 +37,21 @@ export function createServer() {
     },
     {
       name: 'vibedev_specs_goal_confirmed',
-      description: '确认功能目标完成，设置 feature_name，推进到需求收集阶段',
+      description: 'Confirm the completion of the feature goal, set the feature_name, and proceed to the requirements collection phase',
       inputSchema: {
         type: 'object',
         properties: {
           session_id: { 
             type: 'string', 
-            description: '会话标识符' 
+            description: 'Session identifier' 
           },
           feature_name: { 
             type: 'string', 
-            description: '基于目标生成的功能名称（如 user-auth）' 
+            description: 'Feature name generated based on the goal (e.g., user-auth)' 
           },
           goal_summary: {
             type: 'string',
-            description: '功能目标的简要描述'
+            description: 'Brief description of the feature goal'
           }
         },
         required: ['session_id', 'feature_name', 'goal_summary']
@@ -59,17 +59,17 @@ export function createServer() {
     },
     {
       name: 'vibedev_specs_requirements_start',
-      description: '开始需求收集阶段，提供需求收集的指导',
+      description: 'Start the requirements collection phase and provide guidance for requirements gathering',
       inputSchema: {
         type: 'object',
         properties: {
           session_id: { 
             type: 'string', 
-            description: '会话标识符' 
+            description: 'Session identifier' 
           },
           feature_name: { 
             type: 'string', 
-            description: '功能名称' 
+            description: 'Feature name' 
           }
         },
         required: ['session_id', 'feature_name']
@@ -77,17 +77,17 @@ export function createServer() {
     },
     {
       name: 'vibedev_specs_requirements_confirmed',
-      description: '确认需求收集完成，推进到设计阶段',
+      description: 'Confirm the completion of requirements collection and proceed to the design phase',
       inputSchema: {
         type: 'object',
         properties: {
           session_id: { 
             type: 'string', 
-            description: '会话标识符' 
+            description: 'Session identifier' 
           },
           feature_name: { 
             type: 'string', 
-            description: '功能名称' 
+            description: 'Feature name' 
           }
         },
         required: ['session_id', 'feature_name']
@@ -95,17 +95,17 @@ export function createServer() {
     },
     {
       name: 'vibedev_specs_design_start',
-      description: '开始设计文档阶段，提供设计文档创建的指导',
+      description: 'Start the design documentation phase and provide guidance for creating design documents',
       inputSchema: {
         type: 'object',
         properties: {
           session_id: { 
             type: 'string', 
-            description: '会话标识符' 
+            description: 'Session identifier' 
           },
           feature_name: { 
             type: 'string', 
-            description: '功能名称' 
+            description: 'Feature name' 
           }
         },
         required: ['session_id', 'feature_name']
@@ -113,17 +113,17 @@ export function createServer() {
     },
     {
       name: 'vibedev_specs_design_confirmed',
-      description: '确认设计文档完成，推进到任务规划阶段',
+      description: 'Confirm the completion of the design document and proceed to the task planning phase',
       inputSchema: {
         type: 'object',
         properties: {
           session_id: { 
             type: 'string', 
-            description: '会话标识符' 
+            description: 'Session identifier' 
           },
           feature_name: { 
             type: 'string', 
-            description: '功能名称' 
+            description: 'Feature name' 
           }
         },
         required: ['session_id', 'feature_name']
@@ -131,17 +131,17 @@ export function createServer() {
     },
     {
       name: 'vibedev_specs_tasks_start',
-      description: '开始任务规划阶段，提供任务列表创建的指导',
+      description: 'Start the task planning phase and provide guidance for creating the task list',
       inputSchema: {
         type: 'object',
         properties: {
           session_id: { 
             type: 'string', 
-            description: '会话标识符' 
+            description: 'Session identifier' 
           },
           feature_name: { 
             type: 'string', 
-            description: '功能名称' 
+            description: 'Feature name' 
           }
         },
         required: ['session_id', 'feature_name']
@@ -149,17 +149,17 @@ export function createServer() {
     },
     {
       name: 'vibedev_specs_tasks_confirmed',
-      description: '确认任务规划完成，推进到执行阶段',
+      description: 'Confirm the completion of task planning and proceed to the execution phase',
       inputSchema: {
         type: 'object',
         properties: {
           session_id: { 
             type: 'string', 
-            description: '会话标识符' 
+            description: 'Session identifier' 
           },
           feature_name: { 
             type: 'string', 
-            description: '功能名称' 
+            description: 'Feature name' 
           }
         },
         required: ['session_id', 'feature_name']
@@ -167,21 +167,21 @@ export function createServer() {
     },
     {
       name: 'vibedev_specs_execute_start',
-      description: '开始任务执行阶段，提供任务执行的指导',
+      description: 'Start the task execution phase and provide guidance for task execution',
       inputSchema: {
         type: 'object',
         properties: {
           session_id: { 
             type: 'string', 
-            description: '会话标识符' 
+            description: 'Session identifier' 
           },
           feature_name: { 
             type: 'string', 
-            description: '功能名称' 
+            description: 'Feature name' 
           },
           task_id: { 
             type: 'string', 
-            description: '可选：指定要执行的任务ID，不指定则执行下一个未完成任务' 
+            description: 'Optional: Specify the task ID to execute; if not specified, the next unfinished task will be executed' 
           }
         },
         required: ['session_id', 'feature_name']
@@ -189,13 +189,13 @@ export function createServer() {
     }
   ];
 
-  // Register tools list handler
+  // Register the handler for listing tools
   server.setRequestHandler(ListToolsRequestSchema, async () => {
     console.error('[MCP] Handling list tools request');
     return { tools };
   });
 
-  // Register tool call handler
+  // Register the handler for tool calls
   server.setRequestHandler(CallToolRequestSchema, async (request) => {
     const { name, arguments: args } = request.params;
     console.error(`[MCP] Handling tool call: ${name}`, args);

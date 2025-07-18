@@ -1,6 +1,6 @@
 {
   "name": "vibedev-specs-mcp",
-  "version": "0.1.1",
+  "version": "0.1.4",
   "description": "MCP server for vibedev specs workflow - AI-powered development workflow from requirements to code",
   "main": "dist/index.js",
   "type": "module",
@@ -36,7 +36,7 @@
     "url": "https://github.com/yinwm/vibedev-specs-mcp/issues"
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.0.0",
+    "@modelcontextprotocol/sdk": "1.0.0",
     "nanoid": "^5.0.7"
   },
   "devDependencies": {

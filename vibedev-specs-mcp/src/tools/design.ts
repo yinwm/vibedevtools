@@ -11,7 +11,7 @@ export async function designStart(
   const { session_id, feature_name } = params;
   console.error(`[MCP] Starting design phase for feature: ${feature_name}`);
   
-  // 使用 gen-design.md 模板
+  // Use gen-design.md template
   const template = await readTemplate('gen-design.md', {
     feature_name,
     session_id
