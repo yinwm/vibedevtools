@@ -46,11 +46,11 @@ export enum TodoFormat {
 
 export class TodoParser {
   private static readonly TODO_PATTERNS = [
-    // Standard formats with optional priority markers
-    { format: TodoFormat.DASH_CHECKBOX, regex: /^(\s*)-\s*\[([x\s])\]\s*(?:\[([!]{1,2}|[HML])\])?\s*(.+)$/i },
-    { format: TodoFormat.ASTERISK_CHECKBOX, regex: /^(\s*)\*\s*\[([x\s])\]\s*(?:\[([!]{1,2}|[HML])\])?\s*(.+)$/i },  
-    { format: TodoFormat.PLUS_CHECKBOX, regex: /^(\s*)\+\s*\[([x\s])\]\s*(?:\[([!]{1,2}|[HML])\])?\s*(.+)$/i },
-    { format: TodoFormat.NUMBERED_CHECKBOX, regex: /^(\s*)\d+\.\s*\[([x\s])\]\s*(?:\[([!]{1,2}|[HML])\])?\s*(.+)$/i }
+    // Standard formats with optional priority markers at end
+    { format: TodoFormat.DASH_CHECKBOX, regex: /^(\s*)-\s*\[([x\s])\]\s*(.+?)(?:\s*\[([!]{1,2}|[HML])\])?$/i },
+    { format: TodoFormat.ASTERISK_CHECKBOX, regex: /^(\s*)\*\s*\[([x\s])\]\s*(.+?)(?:\s*\[([!]{1,2}|[HML])\])?$/i },  
+    { format: TodoFormat.PLUS_CHECKBOX, regex: /^(\s*)\+\s*\[([x\s])\]\s*(.+?)(?:\s*\[([!]{1,2}|[HML])\])?$/i },
+    { format: TodoFormat.NUMBERED_CHECKBOX, regex: /^(\s*)\d+\.\s*\[([x\s])\]\s*(.+?)(?:\s*\[([!]{1,2}|[HML])\])?$/i }
   ];
 
   /**
@@ -112,14 +112,21 @@ export class TodoParser {
     for (const pattern of this.TODO_PATTERNS) {
       const match = line.match(pattern.regex);
       if (match) {
-        const [, indent, completionMark, priorityMark, text] = match;
+        const [, indent, completionMark, text, priorityMark] = match;
         const indentLevel = this.calculateIndentLevel(indent);
         const completed = completionMark.toLowerCase() === 'x';
-        const priority = this.parsePriority(priorityMark);
+        const priority = this.parsePriority(priorityMark, text);
         
+        // Clean text if no priority mark was captured (it's embedded in text)
+        let cleanText = text.trim();
+        if (!priorityMark) {
+          // Remove trailing priority markers from text
+          cleanText = cleanText.replace(/\s*\[([!]{1,2}|[HML])\]\s*$/, '');
+        }
+
         return {
           id: `todo_${lineNumber}_${Date.now()}`,
-          text: text.trim(),
+          text: cleanText,
           completed,
           lineNumber,
           indentLevel,
@@ -140,13 +147,23 @@ export class TodoParser {
   }
 
   /**
-   * Parse priority from priority marker
+   * Parse priority from priority marker or extract from text
    */
-  private static parsePriority(priorityMark?: string): TodoPriority {
-    if (!priorityMark) return TodoPriority.MEDIUM;
+  private static parsePriority(priorityMark?: string, text?: string): TodoPriority {
+    let mark = priorityMark;
     
-    const mark = priorityMark.toUpperCase();
-    switch (mark) {
+    // If no priority mark captured, try to extract from text
+    if (!mark && text) {
+      const match = text.match(/\[([!]{1,2}|[HML])\]/i);
+      if (match) {
+        mark = match[1];
+      }
+    }
+    
+    if (!mark) return TodoPriority.MEDIUM;
+    
+    const upperMark = mark.toUpperCase();
+    switch (upperMark) {
       case '!!':
       case '!':
       case 'H':
