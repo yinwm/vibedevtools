@@ -1,3 +1,5 @@
+import { statusManager } from '../utils/status-manager-impl.js';
+
 export interface DesignConfirmedParams {
   session_id: string;
   feature_name: string;
@@ -8,6 +10,23 @@ export async function designConfirmed(
 ): Promise<string> {
   const { session_id, feature_name } = params;
   console.error(`[MCP] Design confirmed for feature: ${feature_name}`);
+  
+  // Update spec status: complete design stage and move to tasks
+  const timestamp = new Date().toISOString();
+  
+  // Load current status to preserve other stage information
+  const currentStatus = await statusManager.loadSpecStatus(session_id);
+  await statusManager.updateSpecStatus(session_id, {
+    stage: 'tasks',
+    updated: timestamp,
+    stages: {
+      ...currentStatus.stages,
+      design: ['done', timestamp],
+      tasks: ['active', timestamp, 0, 0],
+      exec: ['pending', '', 1]
+    }
+  });
+  console.error(`[MCP] Updated spec status: design completed, moved to tasks stage`);
   
   return `# ✅ Design Document Completed
 
