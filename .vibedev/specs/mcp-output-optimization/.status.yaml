@@ -1,0 +1,12 @@
+sid: buvbwccek3wg
+name: mcp-output-optimization
+created: '2025-07-25T07:46:16.393Z'
+updated: '2025-07-25T08:33:45.975Z'
+stage: exec
+status: in_progress
+stages:
+  goal: [done, '2025-07-25T07:55:33.935Z']
+  req: [done, '2025-07-25T08:02:15.294Z']
+  design: [done, '2025-07-25T08:20:30.529Z']
+  tasks: [done, '2025-07-25T08:32:30.395Z', 25, 0]
+  exec: [active, '2025-07-25T08:33:45.973Z', 1]

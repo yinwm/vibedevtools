@@ -1,6 +1,6 @@
 import { statusManager } from '../utils/status-manager-impl.js';
-import { outputFormatter } from '../utils/output-formatter.js';
 import { SpecOverallStatus, StageName } from '../utils/status-manager.js';
+import { ContentType, createSuccessResponse, createErrorResponse } from '../utils/yaml-response.js';
 
 export interface UpdateStatusParams {
   session_id: string;
@@ -106,51 +106,54 @@ export async function updateSpecStatus(params: UpdateStatusParams): Promise<stri
     // Load updated spec to show confirmation
     const updatedSpec = await statusManager.loadSpecStatus(session_id);
     
-    // Format confirmation message
-    const lines: string[] = [
-      '# ✅ Spec Status Updated',
-      '',
-      `## Updated Spec: ${updatedSpec.name}`,
-      '',
-      '### Changes Applied:'
-    ];
-    
+    // Build structured confirmation data
+    const changesApplied = [];
     if (status) {
-      lines.push(`- Status: **${status}**`);
+      changesApplied.push({ field: 'status', value: status });
     }
     if (stage) {
-      lines.push(`- Stage: **${stage}**`);
+      changesApplied.push({ field: 'stage', value: stage });
     }
     if (task_completed !== undefined) {
-      lines.push(`- Tasks Completed: **${task_completed}/${currentSpec.stages.tasks[2]}**`);
+      changesApplied.push({ 
+        field: 'tasks_completed', 
+        value: `${task_completed}/${currentSpec.stages.tasks[2]}` 
+      });
     }
     if (notes !== undefined) {
-      lines.push(`- Notes: **${notes || '(cleared)'}**`);
+      changesApplied.push({ field: 'notes', value: notes || '(cleared)' });
     }
     
-    lines.push('', '### Current Status:');
-    lines.push(`- Session ID: \`${updatedSpec.sid}\``);
-    lines.push(`- Feature: \`${updatedSpec.name}\``);
-    lines.push(`- Status: \`${updatedSpec.status}\``);
-    lines.push(`- Stage: \`${updatedSpec.stage}\``);
-    lines.push(`- Updated: \`${new Date(updatedSpec.updated).toLocaleString()}\``);
+    const confirmationData = {
+      action: 'status_updated',
+      spec: {
+        name: updatedSpec.name,
+        session_id: updatedSpec.sid,
+        status: updatedSpec.status,
+        stage: updatedSpec.stage,
+        updated: updatedSpec.updated
+      },
+      changes_applied: changesApplied,
+      notes: updatedSpec.notes || null
+    };
     
-    if (updatedSpec.notes) {
-      lines.push(`- Notes: ${updatedSpec.notes}`);
-    }
-    
-    return lines.join('\n');
+    // Return structured YAML confirmation
+    return createSuccessResponse(
+      ContentType.STATUS_UPDATE,
+      confirmationData,
+      session_id
+    );
     
   } catch (error: any) {
     console.error('[MCP] Error updating spec status:', error);
     
-    // Format error response
-    const errorWithDetails = {
-      ...error,
-      code: error.code || 'UPDATE_ERROR',
-      suggestion: error.suggestion || 'Check the parameters and try again'
-    };
-    
-    return outputFormatter.formatError(errorWithDetails);
+    // Return structured YAML error response
+    return createErrorResponse(
+      error.message,
+      error.code || 'UPDATE_ERROR',
+      error.suggestion || 'Check the parameters and try again',
+      undefined,
+      session_id
+    );
   }
 }

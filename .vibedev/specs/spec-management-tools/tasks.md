@@ -18,7 +18,7 @@ This task list breaks down the implementation of spec management tools into disc
   - Implement read operations with error handling
   - References: Req 5.4 (atomic operations), Req 7.2 (YAML parsing)
 
-- [ ] 1.3 Create Output Formatter module
+- [x] 1.3 Create Output Formatter module
   - Create `/src/utils/output-formatter.ts`
   - Implement box-drawing character constants
   - Add emoji mapping for status indicators
@@ -26,25 +26,25 @@ This task list breaks down the implementation of spec management tools into disc
 
 ### 2. Status Manager Implementation
 
-- [ ] 2.1 Implement spec status loading
+- [x] 2.1 Implement spec status loading
   - Create `loadSpecStatus()` function to read `.status.yaml` files
   - Handle missing files by inferring from .md files
   - Add validation for YAML structure
   - References: Req 2.1 (return comprehensive status), Req 6.3 (handle missing data)
 
-- [ ] 2.2 Implement metadata index management
+- [x] 2.2 Implement metadata index management
   - Create `loadAllSpecs()` to read `_metadata.yaml`
   - Implement `ensureMetadataIndex()` to create index if missing
   - Add sorting by updated date
   - References: Req 5.3 (metadata index), Req 8.1 (sort by date)
 
-- [ ] 2.3 Implement status update operations
+- [x] 2.3 Implement status update operations
   - Create `updateSpecStatus()` with partial updates support
   - Implement `createSpecStatus()` for new specs
   - Auto-update timestamps on changes
   - References: Req 3.5 (auto-update timestamp), Req 5.4 (update both files)
 
-- [ ] 2.4 Implement task progress parsing
+- [x] 2.4 Implement task progress parsing
   - Create `parseTaskProgress()` to analyze tasks.md files
   - Count total tasks and completed tasks (marked with [x])
   - Calculate completion percentage
@@ -96,21 +96,21 @@ This task list breaks down the implementation of spec management tools into disc
 
 ### 5. Output Formatting Implementation
 
-- [ ] 5.1 Implement spec list formatter
+- [x] 5.1 Implement spec list formatter
   - Create box-drawing table layout
   - Add emoji indicators for status and stages
   - Implement progress bar generation
   - Handle empty spec list case
   - References: Req 8.1-8.2 (terminal formatting)
 
-- [ ] 5.2 Implement spec detail formatter
+- [x] 5.2 Implement spec detail formatter
   - Create detailed box layout with sections
   - Format file paths with ellipsis
   - Add visual distinction for stale specs
   - Implement task list formatting
   - References: Req 8.3-8.5 (detail formatting)
 
-- [ ] 5.3 Implement error formatter
+- [x] 5.3 Implement error formatter
   - Create consistent error message format
   - Include actionable suggestions
   - Format error codes clearly

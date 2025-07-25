@@ -56,6 +56,30 @@ export interface TaskProgress {
   completed: number;
   percentage: number;
   currentTask?: number;
+  
+  // Enhanced progress information
+  currentTaskDetails?: {
+    text: string;
+    priority: string;
+    position: number;
+    hasSubtasks: boolean;
+  };
+  nextTasks?: Array<{
+    text: string;
+    priority: string;
+    position: number;
+  }>;
+  priorityBreakdown?: {
+    high: { total: number; completed: number };
+    medium: { total: number; completed: number };
+    low: { total: number; completed: number };
+  };
+  estimatedRemaining?: number;
+  formatValidation?: {
+    isValid: boolean;
+    issues: string[];
+    suggestions: string[];
+  };
 }
 
 // Update options for partial spec updates

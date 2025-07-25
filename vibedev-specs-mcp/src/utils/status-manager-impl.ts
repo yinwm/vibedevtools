@@ -209,38 +209,72 @@ export class StatusManagerImpl implements StatusManager {
     }
   }
 
-  // Parse task progress from tasks.md file
+  // Parse task progress from tasks.md file using enhanced TODO parser
   async parseTaskProgress(taskFile: string): Promise<TaskProgress> {
     try {
       const content = await fs.readFile(taskFile, 'utf8');
       
-      // Count total tasks (lines starting with "- [ ]" or "- [x]")
-      const taskRegex = /^- \[([ x])\]/gm;
-      const matches: RegExpExecArray[] = [];
-      let match;
-      while ((match = taskRegex.exec(content)) !== null) {
-        matches.push(match);
+      // Use TodoParser for comprehensive parsing
+      const { TodoParser } = await import('./todo-parser.js');
+      const parseResult = TodoParser.parse(content);
+      const progressDetails = TodoParser.getProgressDetails(parseResult);
+      const formatValidation = TodoParser.validateFormat(content);
+      
+      // Build current task details
+      let currentTaskDetails;
+      if (parseResult.currentTask) {
+        currentTaskDetails = {
+          text: parseResult.currentTask.text,
+          priority: parseResult.currentTask.priority,
+          position: progressDetails.currentTaskDetails?.position || 1,
+          hasSubtasks: progressDetails.currentTaskDetails?.hasSubtasks || false
+        };
       }
       
-      const total = matches.length;
-      const completed = matches.filter(match => match[1] === 'x').length;
-      const percentage = total > 0 ? Math.round((completed / total) * 100) : 0;
+      // Build next tasks array
+      const nextTasks = parseResult.nextTasks.map((task, index) => ({
+        text: task.text,
+        priority: task.priority,
+        position: parseResult.items.findIndex(item => item.id === task.id) + 1
+      }));
       
-      // Try to find current task (first uncompleted task)
-      let currentTask: number | undefined;
-      for (let i = 0; i < matches.length; i++) {
-        if (matches[i][1] === ' ') {
-          currentTask = i + 1;
-          break;
+      // Build priority breakdown
+      const priorityBreakdown = {
+        high: {
+          total: parseResult.byPriority.high.length,
+          completed: parseResult.byPriority.high.filter(t => t.completed).length
+        },
+        medium: {
+          total: parseResult.byPriority.medium.length,
+          completed: parseResult.byPriority.medium.filter(t => t.completed).length
+        },
+        low: {
+          total: parseResult.byPriority.low.length,
+          completed: parseResult.byPriority.low.filter(t => t.completed).length
         }
-      }
+      };
       
-      return { total, completed, percentage, currentTask };
+      // Build enhanced TaskProgress object
+      const taskProgress: TaskProgress = {
+        total: parseResult.total,
+        completed: parseResult.completed,
+        percentage: parseResult.percentage,
+        currentTask: parseResult.currentTask ? 
+          parseResult.items.findIndex(item => item.id === parseResult.currentTask!.id) + 1 : 
+          undefined,
+        currentTaskDetails,
+        nextTasks,
+        priorityBreakdown,
+        estimatedRemaining: progressDetails.estimatedRemainingTasks,
+        formatValidation
+      };
+      
+      return taskProgress;
     } catch (error) {
       throw this.createError(
         'Failed to parse tasks file',
         ErrorCode.SPEC_NOT_FOUND,
-        'Check if tasks.md exists',
+        'Check if tasks.md exists and has valid TODO format',
         { taskFile, error: error instanceof Error ? error.message : error }
       );
     }

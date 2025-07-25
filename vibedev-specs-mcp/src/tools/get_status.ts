@@ -1,6 +1,6 @@
 import { statusManager } from '../utils/status-manager-impl.js';
-import { outputFormatter } from '../utils/output-formatter.js';
 import { SpecPaths } from '../utils/status-manager.js';
+import { ContentType, createSuccessResponse, createErrorResponse } from '../utils/yaml-response.js';
 import * as fs from 'fs/promises';
 
 export interface GetStatusParams {
@@ -56,19 +56,27 @@ export async function getSpecStatus(params: GetStatusParams): Promise<string> {
       }
     }
     
-    // Format and return detailed status
-    return outputFormatter.formatSpecDetail(spec, taskProgress);
+    // Return structured YAML data for CC to format
+    return createSuccessResponse(
+      ContentType.SPEC_DETAIL,
+      {
+        spec,
+        taskProgress,
+        fileSizes
+      },
+      session_id
+    );
     
   } catch (error: any) {
     console.error('[MCP] Error getting spec status:', error);
     
-    // Format error response
-    const errorWithDetails = {
-      ...error,
-      code: error.code || 'GET_STATUS_ERROR',
-      suggestion: error.suggestion || `Check if the session ID is correct or use 'vibedev_specs_list' to see all specs`
-    };
-    
-    return outputFormatter.formatError(errorWithDetails);
+    // Return structured YAML error response
+    return createErrorResponse(
+      error.message,
+      error.code || 'GET_STATUS_ERROR',
+      error.suggestion || `Check if the session ID is correct or use 'vibedev_specs_list' to see all specs`,
+      undefined,
+      session_id
+    );
   }
 }

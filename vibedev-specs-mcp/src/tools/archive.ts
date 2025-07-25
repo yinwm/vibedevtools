@@ -1,5 +1,5 @@
 import { statusManager } from '../utils/status-manager-impl.js';
-import { outputFormatter } from '../utils/output-formatter.js';
+import { ContentType, createSuccessResponse, createErrorResponse } from '../utils/yaml-response.js';
 
 export interface ArchiveParams {
   session_id: string;
@@ -51,49 +51,46 @@ export async function archiveSpec(params: ArchiveParams): Promise<string> {
     await statusManager.updateSpecStatus(session_id, updates);
     console.error(`[MCP] Successfully ${action}d spec`);
     
-    // Format confirmation message
-    const emoji = action === 'archive' ? '📦' : '🔄';
-    const actionText = action === 'archive' ? 'Archived' : 'Restored';
+    // Build structured confirmation data
+    const confirmationData = {
+      action: action,
+      spec: {
+        name: spec.name,
+        session_id: spec.sid,
+        previous_status: spec.status,
+        new_status: newStatus,
+        stage: spec.stage
+      },
+      timestamp: timestamp,
+      notes: action === 'archive' ? [
+        'Archived specs are excluded from default list views',
+        'Use status_filter: "archived" to see archived specs',
+        'All documents and data are preserved',
+        'You can restore this spec at any time'
+      ] : [
+        'The spec is now active again',
+        'You can continue working from where you left off',
+        `Current stage: ${spec.stage}`
+      ]
+    };
     
-    const lines: string[] = [
-      `# ${emoji} Spec ${actionText}`,
-      '',
-      `## ${actionText} Spec: ${spec.name}`,
-      '',
-      '### Details:'
-    ];
-    
-    lines.push(`- Session ID: \`${spec.sid}\``);
-    lines.push(`- Feature: \`${spec.name}\``);
-    lines.push(`- Previous Status: \`${spec.status}\``);
-    lines.push(`- New Status: \`${newStatus}\``);
-    lines.push(`- ${actionText} At: \`${new Date(timestamp).toLocaleString()}\``);
-    
-    if (action === 'archive') {
-      lines.push('', '### Note:');
-      lines.push('- Archived specs are excluded from default list views');
-      lines.push('- Use `status_filter: "archived"` to see archived specs');
-      lines.push('- All documents and data are preserved');
-      lines.push('- You can restore this spec at any time');
-    } else {
-      lines.push('', '### Note:');
-      lines.push('- The spec is now active again');
-      lines.push('- You can continue working from where you left off');
-      lines.push(`- Current stage: \`${spec.stage}\``);
-    }
-    
-    return lines.join('\n');
+    // Return structured YAML confirmation
+    return createSuccessResponse(
+      ContentType.ARCHIVE_ACTION,
+      confirmationData,
+      session_id
+    );
     
   } catch (error: any) {
     console.error('[MCP] Error archiving spec:', error);
     
-    // Format error response
-    const errorWithDetails = {
-      ...error,
-      code: error.code || 'ARCHIVE_ERROR',
-      suggestion: error.suggestion || 'Check if the session ID is correct'
-    };
-    
-    return outputFormatter.formatError(errorWithDetails);
+    // Return structured YAML error response
+    return createErrorResponse(
+      error.message,
+      error.code || 'ARCHIVE_ERROR',
+      error.suggestion || 'Check if the session ID is correct',
+      undefined,
+      session_id
+    );
   }
 }
