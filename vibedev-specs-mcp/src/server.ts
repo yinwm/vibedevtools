@@ -32,7 +32,7 @@ export function createServer(): Server {
   const tools = [
     {
       name: 'vibedev_specs_workflow_start',
-      description: 'Start the specs workflow and begin the goal collection phase',
+      description: 'Start new spec project, begin development workflow, create new feature. Automatically triggered when user says: "开始新项目", "create new spec", "start project", "new feature", "vibe spec start", "开发新功能", "I want to build", or mentions starting a new development project.',
       inputSchema: {
         type: 'object',
         properties: {},
@@ -193,7 +193,7 @@ export function createServer(): Server {
     },
     {
       name: 'vibedev_specs_list',
-      description: 'List all specs with optional status filtering',
+      description: 'View all specs list, show project overview, check spec status. Automatically triggered when user mentions: "查看 spec 列表", "spec list", "show specs", "vibe spec", "项目列表", "查看项目", "list projects", "show all specs", "project overview", or similar phrases asking for spec overview.',
       inputSchema: {
         type: 'object',
         properties: {
@@ -208,7 +208,7 @@ export function createServer(): Server {
     },
     {
       name: 'vibedev_specs_get_status',
-      description: 'Get detailed status of a specific spec',
+      description: 'Get detailed status and progress of a specific spec project. Automatically triggered when user asks: "查看spec状态", "spec详情", "项目进度", "show spec status", "project details", "check progress", "spec progress", or mentions wanting to see details of a specific project.',
       inputSchema: {
         type: 'object',
         properties: {
@@ -226,7 +226,7 @@ export function createServer(): Server {
     },
     {
       name: 'vibedev_specs_update_status',
-      description: 'Update the status of a spec',
+      description: 'Update spec status, mark progress, or add notes. Automatically triggered when user wants to: "更新状态", "标记完成", "update status", "mark progress", "change spec status", "update project", "修改进度", or mentions updating/changing project status.',
       inputSchema: {
         type: 'object',
         properties: {
@@ -258,7 +258,7 @@ export function createServer(): Server {
     },
     {
       name: 'vibedev_specs_archive',
-      description: 'Archive or restore a spec',
+      description: 'Archive completed specs or restore archived ones. Automatically triggered when user wants to: "归档项目", "archive spec", "hide completed", "restore project", "恢复项目", "archive this", "clean up specs", or mentions archiving/restoring projects.',
       inputSchema: {
         type: 'object',
         properties: {
