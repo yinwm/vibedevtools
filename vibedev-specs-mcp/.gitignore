@@ -6,3 +6,7 @@ dist/
 .env.local
 *.tmp
 *.swp
+
+# Development directories
+.vibedev/
+.claude/
