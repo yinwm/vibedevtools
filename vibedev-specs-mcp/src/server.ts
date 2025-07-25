@@ -12,8 +12,12 @@ import { designConfirmed } from './tools/design_confirmed.js';
 import { tasksStart } from './tools/tasks.js';
 import { tasksConfirmed } from './tools/tasks_confirmed.js';
 import { executeStart } from './tools/execute.js';
+import { listSpecs } from './tools/list.js';
+import { getSpecStatus } from './tools/get_status.js';
+import { updateSpecStatus } from './tools/update_status.js';
+import { archiveSpec } from './tools/archive.js';
 
-export function createServer() {
+export function createServer(): Server {
   const server = new Server(
     { 
       name: 'vibedev-specs-mcp',
@@ -186,6 +190,90 @@ export function createServer() {
         },
         required: ['session_id', 'feature_name']
       }
+    },
+    {
+      name: 'vibedev_specs_list',
+      description: 'List all specs with optional status filtering',
+      inputSchema: {
+        type: 'object',
+        properties: {
+          status_filter: {
+            type: 'string',
+            enum: ['all', 'in_progress', 'completed', 'archived', 'paused'],
+            description: 'Filter specs by status (default: all)'
+          }
+        },
+        required: []
+      }
+    },
+    {
+      name: 'vibedev_specs_get_status',
+      description: 'Get detailed status of a specific spec',
+      inputSchema: {
+        type: 'object',
+        properties: {
+          session_id: {
+            type: 'string',
+            description: 'Session identifier'
+          },
+          feature_name: {
+            type: 'string',
+            description: 'Feature name (optional, can be derived from session_id)'
+          }
+        },
+        required: ['session_id']
+      }
+    },
+    {
+      name: 'vibedev_specs_update_status',
+      description: 'Update the status of a spec',
+      inputSchema: {
+        type: 'object',
+        properties: {
+          session_id: {
+            type: 'string',
+            description: 'Session identifier'
+          },
+          status: {
+            type: 'string',
+            enum: ['in_progress', 'completed', 'archived', 'paused'],
+            description: 'Overall spec status'
+          },
+          stage: {
+            type: 'string',
+            enum: ['goal', 'req', 'design', 'tasks', 'exec'],
+            description: 'Current workflow stage'
+          },
+          task_completed: {
+            type: 'number',
+            description: 'Number of completed tasks'
+          },
+          notes: {
+            type: 'string',
+            description: 'Custom notes or comments'
+          }
+        },
+        required: ['session_id']
+      }
+    },
+    {
+      name: 'vibedev_specs_archive',
+      description: 'Archive or restore a spec',
+      inputSchema: {
+        type: 'object',
+        properties: {
+          session_id: {
+            type: 'string',
+            description: 'Session identifier'
+          },
+          action: {
+            type: 'string',
+            enum: ['archive', 'restore'],
+            description: 'Action to perform: archive or restore'
+          }
+        },
+        required: ['session_id', 'action']
+      }
     }
   ];
 
@@ -238,6 +326,22 @@ export function createServer() {
         
         case 'vibedev_specs_execute_start':
           result = await executeStart(args as any);
+          break;
+        
+        case 'vibedev_specs_list':
+          result = await listSpecs(args as any);
+          break;
+        
+        case 'vibedev_specs_get_status':
+          result = await getSpecStatus(args as any);
+          break;
+        
+        case 'vibedev_specs_update_status':
+          result = await updateSpecStatus(args as any);
+          break;
+        
+        case 'vibedev_specs_archive':
+          result = await archiveSpec(args as any);
           break;
         
         default:

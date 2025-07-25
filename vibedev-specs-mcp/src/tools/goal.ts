@@ -1,3 +1,5 @@
+import { statusManager } from '../utils/status-manager-impl.js';
+
 export interface GoalConfirmedParams {
   session_id: string;
   feature_name: string;
@@ -7,6 +9,22 @@ export interface GoalConfirmedParams {
 export async function goalConfirmed(params: GoalConfirmedParams): Promise<string> {
   const { session_id, feature_name, goal_summary } = params;
   console.error(`[MCP] Goal confirmed for session ${session_id} with feature: ${feature_name}`);
+  
+  // Update spec status: complete goal stage and set feature name
+  const timestamp = new Date().toISOString();
+  await statusManager.updateSpecStatus(session_id, {
+    name: feature_name,
+    stage: 'req',
+    updated: timestamp,
+    stages: {
+      goal: ['done', timestamp],
+      req: ['active', timestamp],
+      design: ['pending', ''], 
+      tasks: ['pending', '', 0, 0],
+      exec: ['pending', '', 1]
+    }
+  });
+  console.error(`[MCP] Updated spec status: goal completed, moved to requirements stage`);
   
   return `# ✅ Feature Goal Confirmed
 

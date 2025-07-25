@@ -1,11 +1,31 @@
 import { customAlphabet } from 'nanoid';
 import { readTemplate } from '../utils/template.js';
+import { statusManager } from '../utils/status-manager-impl.js';
 
 const generateSessionId = customAlphabet('1234567890abcdefghijklmnopqrstuvwxyz', 12);
 
 export async function workflowStart(): Promise<string> {
   const session_id = generateSessionId();
   console.error(`[MCP] Starting workflow with session_id: ${session_id}`);
+  
+  // Initialize spec status in goal stage
+  const timestamp = new Date().toISOString();
+  await statusManager.initializeSpec(session_id, {
+    sid: session_id,
+    name: 'new-spec', // Will be updated when goal is confirmed
+    created: timestamp,
+    updated: timestamp,
+    stage: 'goal',
+    status: 'in_progress',
+    stages: {
+      goal: ['active', timestamp],
+      req: ['pending', ''],
+      design: ['pending', ''], 
+      tasks: ['pending', '', 0, 0],
+      exec: ['pending', '', 1]
+    }
+  });
+  console.error(`[MCP] Initialized spec status for session ${session_id}`);
   
   // Use ask-goal.md template
   const template = await readTemplate('ask-goal.md', {

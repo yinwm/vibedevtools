@@ -387,7 +387,10 @@ export class OutputFormatter {
     return BOX_CHARS.V + text.padEnd(width) + BOX_CHARS.V;
   }
   
-  private wrapText(text: string, maxWidth: number): string[] {
+  private wrapText(text: string | undefined, maxWidth: number): string[] {
+    if (!text) {
+      return [''];
+    }
     const words = text.split(' ');
     const lines: string[] = [];
     let currentLine = '';

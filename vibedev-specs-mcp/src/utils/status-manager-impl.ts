@@ -154,6 +154,20 @@ export class StatusManagerImpl implements StatusManager {
     await this.updateMetadataIndex(updatedStatus);
   }
 
+  // Initialize spec with provided status
+  async initializeSpec(sessionId: string, status: SpecStatus): Promise<void> {
+    console.error(`[StatusManager] Initializing spec: ${sessionId} -> ${status.name}`);
+    
+    const specDir = SpecPaths.getSpecDir(status.name);
+    await fs.mkdir(specDir, { recursive: true });
+    
+    const statusPath = SpecPaths.getStatusPath(status.name);
+    await this.atomicWriteYaml(statusPath, status);
+    
+    // Update metadata index
+    await this.updateMetadataIndex(status);
+  }
+
   // Create new spec status
   async createSpecStatus(sessionId: string, featureName: string): Promise<void> {
     const now = new Date().toISOString();
